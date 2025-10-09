@@ -64,6 +64,29 @@ Resources:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
 
+
+  ProcessBidFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: process_bid.lambda_handler
+      CodeUri: src
+      Description: Process Bid Queue Worker
+      Architectures:
+        - x86_64
+      Events:
+        SQSTrigger:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt ProcessBidQueue.Arn
+            BatchSize: 10
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !Ref ProcessBidQueue
+      Environment:
+        Variables:
+          BID_QUEUE_URL: !Ref ProcessBidQueue
+
+
   ProcessBidQueue:
     Type: AWS::SQS::Queue
     Properties:

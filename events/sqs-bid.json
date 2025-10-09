@@ -1,0 +1,12 @@
+{
+  "Records": [
+    {
+      "messageId": "1",
+      "receiptHandle": "xyz",
+      "body": "{\"id\": \"59eb8289-c2ba-4752-b597-c7c2c61ee839\", \"user_id\": \"fc414c61-a224-4e43-bcf8-f2e9ed659837\", \"amount\": 2500.0, \"timestamp\": \"2025-10-09T06:57:25.895137\"}",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:my-lambda-queue",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}
