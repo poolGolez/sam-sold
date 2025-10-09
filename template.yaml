@@ -64,7 +64,6 @@ Resources:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
 
-
   ProcessBidFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -79,32 +78,34 @@ Resources:
           Properties:
             Queue: !GetAtt ProcessBidQueue.Arn
             BatchSize: 10
+            # MaximumBatchingWindowInSeconds: 300
+            Enabled: true
       Policies:
         - SQSPollerPolicy:
             QueueName: !Ref ProcessBidQueue
+        - DynamoDBCrudPolicy:
+            TableName: !Ref BidsTable
       Environment:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
-
+          BIDS_TABLE: !Ref BidsTable
 
   ProcessBidQueue:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: !Sub "${AWS::StackName}-bid-queue"
 
-#  MyFunction:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler: app.lambda_handler
-#      CodeUri: .
-#      Events:
-#        SQSTrigger:
-#          Type: SQS
-#          Properties:
-#            Queue: !GetAtt BidQueue.Arn
-#      Policies:
-#        - SQSPollerPolicy:
-#            QueueName: !GetAtt BidQueue.QueueName
+  BidsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: SamSoldBids
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
 
 Outputs:
   HelloWorldApi:

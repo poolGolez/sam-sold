@@ -26,6 +26,7 @@ def place_bid():
         QueueUrl=bid_queue_url,
         MessageBody=json.dumps(bid.to_json())
     )
+    print(f"Successfully placed bid {bid.id}",)
 
     return {
         "message": "Place Bid",
@@ -52,6 +53,7 @@ class Bid:
         return {
             "id": self.id,
             "user_id": self.user_id,
+            "lot_id": self.lot_id,
             "amount": self.amount,
             "timestamp": self.time_placed.isoformat()
         }
