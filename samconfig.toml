@@ -3,7 +3,7 @@
 version = 0.1
 
 [default.global.parameters]
-stack_name = "sam_sold"
+stack_name = "sam-sold"
 
 [default.build.parameters]
 cached = true
@@ -11,11 +11,6 @@ parallel = true
 
 [default.validate.parameters]
 lint = true
-
-[default.deploy.parameters]
-capabilities = "CAPABILITY_IAM"
-confirm_changeset = true
-resolve_s3 = true
 
 [default.package.parameters]
 resolve_s3 = true
@@ -28,3 +23,12 @@ warm_containers = "EAGER"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
+
+[default.deploy.parameters]
+stack_name = "sam-sold-dev"
+resolve_s3 = true
+s3_prefix = "sam-sold-dev"
+region = "ap-southeast-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
