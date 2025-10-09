@@ -54,14 +54,40 @@ Resources:
           Properties:
             Path: /bid
             Method: post
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - sqs:SendMessage
+            Resource: !GetAtt ProcessBidQueue.Arn
+      Environment:
+        Variables:
+          BID_QUEUE_URL: !Ref ProcessBidQueue
 
+  ProcessBidQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${AWS::StackName}-bid-queue"
+
+#  MyFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: app.lambda_handler
+#      CodeUri: .
+#      Events:
+#        SQSTrigger:
+#          Type: SQS
+#          Properties:
+#            Queue: !GetAtt BidQueue.Arn
+#      Policies:
+#        - SQSPollerPolicy:
+#            QueueName: !GetAtt BidQueue.QueueName
 
 Outputs:
   HelloWorldApi:
     Description: API Gateway endpoint URL for for Hello World
       Function
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
-
-  HelloWorldFunction:
-    Description: Hello World Lambda Function ARN
-    Value: !GetAtt HelloWorldFunction.Arn
+  BidQueueName:
+    Description: "Name of the bid queue"
+    Value: !GetAtt ProcessBidQueue.QueueName
