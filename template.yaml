@@ -39,12 +39,28 @@ Resources:
           LOG_LEVEL: INFO
       Tags:
         LambdaPowertools: python
+  PlaceBidFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: place_bid.lambda_handler
+      CodeUri: src
+      Description: Place Bid function
+      Architectures:
+        - x86_64
+#      Tracing: Active
+      Events:
+        PlaceBidPath:
+          Type: Api
+          Properties:
+            Path: /bid
+            Method: post
+
 
 Outputs:
   HelloWorldApi:
     Description: API Gateway endpoint URL for for Hello World
       Function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/hello"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
 
   HelloWorldFunction:
     Description: Hello World Lambda Function ARN
