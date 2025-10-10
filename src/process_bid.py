@@ -24,6 +24,15 @@ def parse_record(record: dict) -> Bid:
     })
 
 
+def save_bid(bid):
+    item = {
+        "PK": f"BID#{bid.id}",
+        **bid.to_json()
+    }
+
+    bids_table.put_item(Item=item)
+
+
 def lambda_handler(event: dict, context: LambdaContext):
     for record in event['Records']:
         print(">>>>> PROCESSING BID [start] >>>>>")
@@ -31,8 +40,7 @@ def lambda_handler(event: dict, context: LambdaContext):
         print("<<<<< PROCESSING BID [end] <<<<<")
 
         bid = parse_record(json.loads(record['body']))
-        print("~~~~~", bid)
-        bids_table.put_item(Item=(bid.to_json()))
+        save_bid(bid)
         print(f"Successfully saved bid {bid.id}")
 
     # TODO: Return unprocessed bids

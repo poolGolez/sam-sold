@@ -101,10 +101,10 @@ Resources:
       TableName: SamSoldBids
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-        - AttributeName: id
+        - AttributeName: PK
           AttributeType: S
       KeySchema:
-        - AttributeName: id
+        - AttributeName: PK
           KeyType: HASH
 
 Outputs:
