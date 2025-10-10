@@ -1,13 +1,12 @@
 import json
 import os
-from dataclasses import dataclass, field
 from datetime import datetime
-from decimal import Decimal
-from uuid import uuid4
 
 import boto3
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver
 from aws_lambda_powertools.utilities.typing import LambdaContext
+
+from domain import Bid
 
 app = APIGatewayRestResolver()
 bid_queue_url = os.environ['BID_QUEUE_URL']
@@ -41,19 +40,3 @@ def lambda_handler(event: dict, context: LambdaContext) -> dict:
     return app.resolve(event, context)
 
 
-@dataclass(frozen=True)
-class Bid:
-    user_id: str
-    lot_id: str
-    amount: Decimal
-    time_placed: datetime
-    id: str = field(default_factory=lambda: str(uuid4()))
-
-    def to_json(self) -> dict:
-        return {
-            "id": self.id,
-            "user_id": self.user_id,
-            "lot_id": self.lot_id,
-            "amount": self.amount,
-            "timestamp": self.time_placed.isoformat()
-        }
