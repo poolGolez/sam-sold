@@ -18,7 +18,8 @@ def place_bid():
     body = app.current_event.json_body
     bid = Bid(**{
         **body,
-        "time_placed": datetime.now()
+        "time_placed": datetime.now(),
+        "time_processed": None
     })
 
     sqs_response = sqs.send_message(
