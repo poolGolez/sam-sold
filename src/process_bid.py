@@ -15,24 +15,25 @@ bids_table = dynamodb.Table(bids_table_name)
 
 #  This is polling shit!y
 
+def parse_record(record: dict) -> Bid:
+    return Bid(**{
+        **record,
+        "amount": Decimal(record['amount']),
+        "time_placed": datetime.fromisoformat(record['time_placed']),
+        "time_processed": datetime.now()
+    })
+
+
 def lambda_handler(event: dict, context: LambdaContext):
     for record in event['Records']:
         print(">>>>> PROCESSING BID [start] >>>>>")
         print(record)
         print("<<<<< PROCESSING BID [end] <<<<<")
 
-        body = json.loads(record['body'])
-        print(body)
-
-        bid = Bid(**{
-            **body,
-            "amount": Decimal(body['amount']),
-            "time_placed": datetime.fromisoformat(body['time_placed']),
-            "time_processed": datetime.now()
-        })
-
+        bid = parse_record(json.loads(record['body']))
         print("~~~~~", bid)
         bids_table.put_item(Item=(bid.to_json()))
         print(f"Successfully saved bid {bid.id}")
 
+    # TODO: Return unprocessed bids
     return {"status": 200}
