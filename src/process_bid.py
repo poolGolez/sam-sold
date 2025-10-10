@@ -25,23 +25,32 @@ def parse_record(record: dict) -> Bid:
 
 
 def save_bid(bid):
+    if bid.amount < 0:
+        raise ValueError("Amount should not be negative")
+
     item = {
         "PK": f"BID#{bid.id}",
         **bid.to_json()
     }
-
     bids_table.put_item(Item=item)
 
 
 def lambda_handler(event: dict, context: LambdaContext):
+    failed_records = []
     for record in event['Records']:
-        print(">>>>> PROCESSING BID [start] >>>>>")
-        print(record)
-        print("<<<<< PROCESSING BID [end] <<<<<")
+        print(f"Processing {len(event['Records'])} records...")
+        body = json.loads(record['body'])
+        try:
+            print(f"Processing record {record}")
 
-        bid = parse_record(json.loads(record['body']))
-        save_bid(bid)
-        print(f"Successfully saved bid {bid.id}")
+            bid = parse_record(body)
+            save_bid(bid)
+            print(f"Successfully saved bid {bid.id}")
+        except Exception:
+            print(f"Failed processing bid {body['id']}")
+            failed_records.append({
+                'itemIdentifier': record['messageId']
+            })
 
-    # TODO: Return unprocessed bids
-    return {"status": 200}
+    print({"batchItemFailures": failed_records})
+    return {"batchItemFailures": failed_records}

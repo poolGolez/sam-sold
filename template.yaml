@@ -72,17 +72,23 @@ Resources:
       Description: Process Bid Queue Worker
       Architectures:
         - x86_64
+      Timeout: 30
+      ReservedConcurrentExecutions: 1
       Events:
         SQSTrigger:
           Type: SQS
           Properties:
+            Enabled: true
             Queue: !GetAtt ProcessBidQueue.Arn
             BatchSize: 10
             # MaximumBatchingWindowInSeconds: 300
-            Enabled: true
+            FunctionResponseTypes:
+              - ReportBatchItemFailures
       Policies:
         - SQSPollerPolicy:
             QueueName: !Ref ProcessBidQueue
+        - SQSSendMessagePolicy:
+            QueueName: !Ref ProcessBidDeadLetterQueue
         - DynamoDBCrudPolicy:
             TableName: !Ref BidsTable
       Environment:
@@ -94,6 +100,14 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: !Sub "${AWS::StackName}-bid-queue"
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt ProcessBidDeadLetterQueue.Arn
+        maxReceiveCount: 3
+
+  ProcessBidDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${AWS::StackName}-bid-queue-dlq"
 
   BidsTable:
     Type: AWS::DynamoDB::Table
