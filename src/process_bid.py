@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 
 import boto3
+from aws_lambda_powertools import Logger
 from aws_xray_sdk.core.lambda_launcher import LambdaContext
 
 from domain import Bid
@@ -11,6 +12,7 @@ from domain import Bid
 bids_table_name = os.environ['BIDS_TABLE']
 dynamodb = boto3.resource('dynamodb')
 bids_table = dynamodb.Table(bids_table_name)
+logger = Logger(service="BidService")
 
 
 def parse_record(record: dict) -> Bid:
@@ -23,6 +25,7 @@ def parse_record(record: dict) -> Bid:
 
 
 def save_bid(bid):
+    # Bid should be unique
     if bid.amount < 0:
         raise ValueError("Amount should not be negative")
 
@@ -33,18 +36,19 @@ def save_bid(bid):
     bids_table.put_item(Item=item)
 
 
-def lambda_handler(event: dict, context: LambdaContext):
+@logger.inject_lambda_context
+def lambda_handler(event: dict, _context: LambdaContext):
     failed_records = []
     for record in event['Records']:
         body = json.loads(record['body'])
         try:
-            print(f"Processing record {record}")
+            logger.debug("Processing record", extra={"record": record})
 
             bid = parse_record(body)
             save_bid(bid)
-            print(f"Successfully saved bid {bid.id}")
+            logger.info("Successfully saved bid", extra={"bid": bid})
         except Exception:
-            print(f"Failed processing bid {body['id']}")
+            logger.error("Failed processing record", extra={"record": record})
             failed_records.append({
                 'itemIdentifier': record['messageId']
             })
