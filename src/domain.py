@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
+from enum import Enum, auto
 from typing import Optional
 from uuid import uuid4
 
@@ -24,3 +25,19 @@ class Bid:
             "time_processed": self.time_processed.isoformat() \
                 if (self.time_processed is not None) else None
         }
+
+class LotStatus(Enum):
+    DRAFT = auto()
+    OPEN = auto()
+    CLOSED = auto()
+
+
+@dataclass(frozen=True)
+class Lot:
+    id: str
+    name: str
+    status: LotStatus = LotStatus.DRAFT
+    highest_bid_id: Optional[str] = None
+    highest_bid_amount: Optional[Decimal] = None
+    time_opened: Optional[datetime] = None
+    time_closed: Optional[datetime] = None
