@@ -13,8 +13,6 @@ dynamodb = boto3.resource('dynamodb')
 bids_table = dynamodb.Table(bids_table_name)
 
 
-#  This is polling shit!y
-
 def parse_record(record: dict) -> Bid:
     return Bid(**{
         **record,
@@ -38,7 +36,6 @@ def save_bid(bid):
 def lambda_handler(event: dict, context: LambdaContext):
     failed_records = []
     for record in event['Records']:
-        print(f"Processing {len(event['Records'])} records...")
         body = json.loads(record['body'])
         try:
             print(f"Processing record {record}")
@@ -52,5 +49,4 @@ def lambda_handler(event: dict, context: LambdaContext):
                 'itemIdentifier': record['messageId']
             })
 
-    print({"batchItemFailures": failed_records})
     return {"batchItemFailures": failed_records}

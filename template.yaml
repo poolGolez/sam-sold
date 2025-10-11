@@ -81,7 +81,7 @@ Resources:
             Enabled: true
             Queue: !GetAtt ProcessBidQueue.Arn
             BatchSize: 10
-            # MaximumBatchingWindowInSeconds: 300
+            MaximumBatchingWindowInSeconds: 10
             FunctionResponseTypes:
               - ReportBatchItemFailures
       Policies:
