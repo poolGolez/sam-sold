@@ -25,15 +25,17 @@ def parse_record(record: dict) -> Bid:
 
 
 def save_bid(bid):
-    # Bid should be unique
+    # Lot should exist
     if bid.amount < 0:
         raise ValueError("Amount should not be negative")
 
-    item = {
-        "PK": f"BID#{bid.id}",
-        **bid.to_json()
-    }
-    bids_table.put_item(Item=item)
+    bids_table.put_item(
+        Item={
+            "PK": f"BID#{bid.id}",
+            **bid.to_json()
+        },
+        ConditionExpression='attribute_not_exists(PK)'
+    )
 
 
 @logger.inject_lambda_context
