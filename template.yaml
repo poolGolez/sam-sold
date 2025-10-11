@@ -15,30 +15,6 @@ Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/devel
     LoggingConfig:
       LogFormat: JSON
 Resources:
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-    Properties:
-      Handler: app.lambda_handler
-      CodeUri: hello_world
-      Description: Hello World function
-      Architectures:
-        - x86_64
-      Tracing: Active
-      Events:
-        HelloPath:
-          Type: Api # More info about API Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-api.html
-          Properties:
-            Path: /hello
-            Method:
-              GET
-              # Powertools env vars: https://awslabs.github.io/aws-lambda-powertools-python/#environment-variables
-      Environment:
-        Variables:
-          POWERTOOLS_SERVICE_NAME: PowertoolsHelloWorld
-          POWERTOOLS_METRICS_NAMESPACE: Powertools
-          LOG_LEVEL: INFO
-      Tags:
-        LambdaPowertools: python
   PlaceBidFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -136,10 +112,6 @@ Resources:
           KeyType: HASH
 
 Outputs:
-  HelloWorldApi:
-    Description: API Gateway endpoint URL for for Hello World
-      Function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
   BidQueueName:
     Description: "Name of the bid queue"
     Value: !GetAtt ProcessBidQueue.QueueName

@@ -31,10 +31,7 @@ def place_bid():
     logger.info("Successfully placed bid", extra={"bid_id": bid.id})
 
     return {
-        "message": "Place Bid",
-        "body": body,
         "bid": bid.to_json(),
-        "queue": bid_queue_url,
         "sqs_response": sqs_response
     }
 
