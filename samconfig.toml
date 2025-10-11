@@ -3,7 +3,7 @@
 version = 0.1
 
 [default.global.parameters]
-stack_name = "sam-sold"
+stack_name = "sam-sold-dev"
 
 [default.build.parameters]
 cached = true

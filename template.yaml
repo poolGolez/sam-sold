@@ -63,6 +63,7 @@ Resources:
       Environment:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
+    DependsOn: PlaceBidFunctionLogGroup
 
   ProcessBidFunction:
     Type: AWS::Serverless::Function
@@ -81,7 +82,7 @@ Resources:
             Enabled: true
             Queue: !GetAtt ProcessBidQueue.Arn
             BatchSize: 10
-            MaximumBatchingWindowInSeconds: 10
+#            MaximumBatchingWindowInSeconds: 10
             FunctionResponseTypes:
               - ReportBatchItemFailures
       Policies:
@@ -95,6 +96,19 @@ Resources:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
           BIDS_TABLE: !Ref BidsTable
+    DependsOn: ProcessBidFunctionLogGroup
+
+  PlaceBidFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:  /aws/lambda/PlaceBidFunction
+      RetentionInDays: 1
+
+  ProcessBidFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:  /aws/lambda/ProcessBidFunction
+      RetentionInDays: 1
 
   ProcessBidQueue:
     Type: AWS::SQS::Queue
