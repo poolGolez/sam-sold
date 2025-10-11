@@ -26,7 +26,8 @@ def place_bid():
 
     sqs_response = sqs.send_message(
         QueueUrl=bid_queue_url,
-        MessageBody=json.dumps(bid.to_json())
+        MessageBody=json.dumps(bid.to_json()),
+        MessageGroupId=bid.lot_id,
     )
     logger.info("Successfully placed bid", extra={"bid_id": bid.id})
 

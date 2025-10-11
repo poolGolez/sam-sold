@@ -69,6 +69,7 @@ def find_lot(lot_id: str) -> Optional[Lot]:
 @logger.inject_lambda_context
 def lambda_handler(event: dict, _context: LambdaContext):
     failed_records = []
+    logger.info(f"Processing {len(event['Records'])} records.")
     for record in event['Records']:
         body = json.loads(record['body'])
         try:

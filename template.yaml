@@ -58,7 +58,6 @@ Resources:
             Enabled: true
             Queue: !GetAtt ProcessBidQueue.Arn
             BatchSize: 10
-#            MaximumBatchingWindowInSeconds: 10
             FunctionResponseTypes:
               - ReportBatchItemFailures
       Policies:
@@ -89,7 +88,9 @@ Resources:
   ProcessBidQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: !Sub "${AWS::StackName}-bid-queue"
+      QueueName: !Sub "${AWS::StackName}-bid-fifo-queue.fifo"
+      FifoQueue: true
+      ContentBasedDeduplication: true
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt ProcessBidDeadLetterQueue.Arn
         maxReceiveCount: 3
@@ -97,7 +98,8 @@ Resources:
   ProcessBidDeadLetterQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: !Sub "${AWS::StackName}-bid-queue-dlq"
+      QueueName: !Sub "${AWS::StackName}-bid-fifo-queue-dlq.fifo"
+      FifoQueue: true
 
   BidsTable:
     Type: AWS::DynamoDB::Table
@@ -112,6 +114,7 @@ Resources:
           KeyType: HASH
 
 Outputs:
-  BidQueueName:
-    Description: "Name of the bid queue"
-    Value: !GetAtt ProcessBidQueue.QueueName
+  ApiEndpoint:
+    Description: API Gateway endpoint URL for for Hello World
+      Function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
