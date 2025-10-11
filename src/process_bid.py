@@ -18,7 +18,7 @@ logger = Logger(service="BidService")
 def parse_record(record: dict) -> Bid:
     return Bid(**{
         **record,
-        "amount": Decimal(record['amount']),
+        "amount": Decimal(str(record['amount'])),
         "time_placed": datetime.fromisoformat(record['time_placed']),
         "time_processed": datetime.now()
     })
@@ -47,8 +47,8 @@ def lambda_handler(event: dict, _context: LambdaContext):
             bid = parse_record(body)
             save_bid(bid)
             logger.info("Successfully saved bid", extra={"bid": bid})
-        except Exception:
-            logger.error("Failed processing record", extra={"record": record})
+        except Exception as error:
+            logger.error("Failed processing record", extra={"record": record, "error": error})
             failed_records.append({
                 'itemIdentifier': record['messageId']
             })
