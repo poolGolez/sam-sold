@@ -45,9 +45,10 @@ def save_bid(bid):
 
 
 def find_lot(lot_id: str) -> Optional[Lot]:
-    response = bids_table.get_item(Key={
-        "PK": f"LOT#{lot_id}"
-    })
+    response = bids_table.get_item(
+        Key={"PK": f"LOT#{lot_id}"},
+        ConsistentRead=True,
+    )
 
     item = response.get('Item')
     if item is None:
