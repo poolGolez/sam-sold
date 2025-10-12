@@ -53,6 +53,12 @@ Resources:
           Properties:
             Path: /lots/{lot_id}
             Method: get
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref BidsTable
+      Environment:
+        Variables:
+          BIDS_TABLE: !Ref BidsTable
 
   ProcessBidFunction:
     Type: AWS::Serverless::Function
