@@ -23,7 +23,6 @@ Resources:
       Description: Place Bid function
       Architectures:
         - x86_64
-#      Tracing: Active
       Events:
         PlaceBidPath:
           Type: Api
@@ -39,6 +38,21 @@ Resources:
       Environment:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
+
+  LotApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lot_api.lambda_handler
+      CodeUri: src
+      Description: Resources API for Lot
+      Architectures:
+        - x86_64
+      Events:
+        GetLotPath:
+          Type: Api
+          Properties:
+            Path: /lots/{lot_id}
+            Method: get
 
   ProcessBidFunction:
     Type: AWS::Serverless::Function
@@ -81,6 +95,12 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub "/aws/lambda/${ProcessBidFunction}"
+      RetentionInDays: 1
+
+  LotApiFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${LotApiFunction}"
       RetentionInDays: 1
 
   ProcessBidQueue:
