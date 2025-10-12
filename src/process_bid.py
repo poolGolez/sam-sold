@@ -25,7 +25,7 @@ def parse_record(record: dict) -> Bid:
     })
 
 
-def save_bid(bid):
+def process_bid(bid):
     lot = find_lot(bid.lot_id)
     if lot is None:
         raise ValueError(f"Lot {bid.lot_id} does not exists")
@@ -42,6 +42,20 @@ def save_bid(bid):
         },
         ConditionExpression='attribute_not_exists(PK)'
     )
+
+    if lot.highest_bid_id is None or lot.highest_bid_amount < bid.amount:
+        bids_table.update_item(
+            Key={
+                'PK': f"LOT#{lot.id}"  # Replace with your actual key name and value
+            },
+            UpdateExpression='SET highest_bid_id = :bid_id, highest_bid_amount = :bid_amount',
+            ExpressionAttributeValues={
+                ":bid_id": bid.id,
+                ":bid_amount": bid.amount
+            }
+        )
+
+        logger.info(f"The bid for LOT {lot.id} has increased to {bid.amount}", extra={"lot": lot, "bid": bid})
 
 
 def find_lot(lot_id: str) -> Optional[Lot]:
@@ -77,7 +91,7 @@ def lambda_handler(event: dict, _context: LambdaContext):
             logger.debug("Processing record", extra={"record": record})
 
             bid = parse_record(body)
-            save_bid(bid)
+            process_bid(bid)
             logger.info("Successfully saved bid", extra={"bid": bid})
         except Exception as error:
             logger.error("Failed processing record", extra={"record": record, "error": error})
