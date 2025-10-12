@@ -30,7 +30,8 @@ def process_bid(bid):
     if lot is None:
         raise ValueError(f"Lot {bid.lot_id} does not exists")
 
-    # Lot should be ACTIVE!
+    if lot.status != LotStatus.OPEN:
+        raise ValueError(f"Lot {lot.id} is currently not OPEN")
 
     if bid.amount < 0:
         raise ValueError("Amount should not be negative")
