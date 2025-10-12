@@ -39,7 +39,6 @@ Resources:
       Environment:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
-    DependsOn: PlaceBidFunctionLogGroup
 
   ProcessBidFunction:
     Type: AWS::Serverless::Function
@@ -71,18 +70,17 @@ Resources:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
           BIDS_TABLE: !Ref BidsTable
-    DependsOn: ProcessBidFunctionLogGroup
 
   PlaceBidFunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName:  /aws/lambda/PlaceBidFunction
+      LogGroupName: !Sub "/aws/lambda/${PlaceBidFunction}"
       RetentionInDays: 1
 
   ProcessBidFunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName:  /aws/lambda/ProcessBidFunction
+      LogGroupName: !Sub "/aws/lambda/${ProcessBidFunction}"
       RetentionInDays: 1
 
   ProcessBidQueue:
