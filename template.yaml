@@ -105,6 +105,19 @@ Resources:
             BatchSize: 5
             MaximumRetryAttempts: 2
             Enabled: true
+            FilterCriteria:
+              Filters:
+                - Pattern: >
+                    {
+                      "eventName": ["MODIFY"],
+                      "dynamodb": {
+                        "Keys": {
+                          "PK": {
+                            "S": [{"prefix": "LOT#"}]
+                          }
+                        }
+                      }
+                    }
 
   PlaceBidFunctionLogGroup:
     Type: AWS::Logs::LogGroup
