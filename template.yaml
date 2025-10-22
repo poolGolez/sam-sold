@@ -132,7 +132,7 @@ Resources:
     Properties:
       LayerName: sam-sold-dependencies
       Description: Common Python dependencies
-      ContentUri: layers/my_dependencies
+      ContentUri: layers/sam_sold_dependencies
       CompatibleRuntimes:
         - python3.12
     DeletionPolicy: Delete
