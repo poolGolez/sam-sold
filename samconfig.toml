@@ -4,6 +4,7 @@ version = 0.1
 
 [default.global.parameters]
 stack_name = "sam-sold-dev"
+template_file = "infrastructure/root-template.yaml"
 
 [default.build.parameters]
 cached = true
@@ -30,5 +31,5 @@ resolve_s3 = true
 s3_prefix = "sam-sold-dev"
 region = "ap-southeast-1"
 confirm_changeset = true
-capabilities = "CAPABILITY_IAM"
+capabilities = ["CAPABILITY_IAM", "CAPABILITY_AUTO_EXPAND"]
 image_repositories = []

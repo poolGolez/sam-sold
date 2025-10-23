@@ -1,25 +1,20 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  sam_sold
 
-  Powertools example
-
-Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+Globals:
   Function:
     Timeout: 5
     MemorySize: 128
     Runtime: python3.12
-
-    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
     LoggingConfig:
       LogFormat: JSON
+
 Resources:
   PlaceBidFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: place_bid.lambda_handler
-      CodeUri: src
+      CodeUri: ../src
       Layers:
         - !Ref SamSoldLayer
       Description: Place Bid function
@@ -45,7 +40,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lot_api.lambda_handler
-      CodeUri: src
+      CodeUri: ../src
       Layers:
         - !Ref SamSoldLayer
       Description: Resources API for Lot
@@ -68,7 +63,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: process_bid.lambda_handler
-      CodeUri: src
+      CodeUri: ../src
       Layers:
         - !Ref SamSoldLayer
       Description: Process Bid Queue Worker
@@ -100,7 +95,7 @@ Resources:
   BroadcastLotChangesFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src
+      CodeUri: ../src
       Handler: broadcast_lot_changes.lambda_handler
       Layers:
         - !Ref SamSoldLayer
@@ -127,12 +122,14 @@ Resources:
                       }
                     }
 
+
+
   SamSoldLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: sam-sold-dependencies
+      LayerName: !Sub "${AWS::StackName}_core-dependencies"
       Description: Common Python dependencies
-      ContentUri: layers/sam_sold_dependencies
+      ContentUri: ../layers/sam_sold_dependencies
       CompatibleRuntimes:
         - python3.12
     DeletionPolicy: Delete
@@ -191,65 +188,9 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
 
-  ##### WEB SOCKETS
-  WebSocketApi:
-    Type: AWS::ApiGatewayV2::Api
-    Properties:
-      Name: MinimalWebSocketAPI
-      ProtocolType: WEBSOCKET
-      RouteSelectionExpression: "$request.body.action"
-
-  WebSocketStage:
-    Type: AWS::ApiGatewayV2::Stage
-    Properties:
-      StageName: dev
-      ApiId: !Ref WebSocketApi
-      AutoDeploy: true
-
-  ConnectRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref WebSocketApi
-      RouteKey: $connect
-      AuthorizationType: NONE
-      Target: !Sub "integrations/${ConnectIntegration}"
-
-  ConnectIntegration:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref WebSocketApi
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ConnectFunction.Arn}/invocations
-
-  ConnectFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: WebSocketConnectHandler
-      CodeUri: ./src/lot_notification
-      Handler: ws_connection.lambda_handler
-      Policies:
-        - AWSLambdaBasicExecutionRole
-        - Statement:
-            - Effect: Allow
-              Action:
-                - execute-api:ManageConnections
-              Resource: "*"
-
-  ConnectPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !Ref ConnectFunction
-      Principal: apigateway.amazonaws.com
-      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/$connect"
-
 
 Outputs:
   ApiEndpoint:
     Description: API Gateway endpoint URL for for Hello World
       Function
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
-
-  WebSocketApiEndpoint:
-    Description: "WebSocket API endpoint"
-    Value: !Sub wss://${WebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/dev

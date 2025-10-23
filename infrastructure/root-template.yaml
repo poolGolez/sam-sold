@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam_sold
+
+  Powertools example
+
+Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+  Function:
+    Timeout: 5
+    MemorySize: 128
+    Runtime: python3.12
+
+    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
+    LoggingConfig:
+      LogFormat: JSON
+Resources:
+
+  BidApiStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./bid-api.yaml
+
+  WebSocketApiStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./websocket-api.yaml
+
+Outputs:
+  BidApiEndpoint:
+    Description: API Gateway endpoint URL for Bids API
+      Function
+    Value: !GetAtt BidApiStack.Outputs.ApiEndpoint
+
+  WebSocketApiEndpoint:
+    Description: "WebSocket API endpoint"
+    Value: !GetAtt WebSocketApiStack.Outputs.ApiEndpoint
