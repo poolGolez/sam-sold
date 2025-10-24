@@ -53,6 +53,9 @@ Resources:
               Resource: "*"
         - DynamoDBCrudPolicy:
             TableName: !Ref ConnectionsTable
+      Environment:
+        Variables:
+          CONNECTIONS_TABLE: !Ref ConnectionsTable
 
   ConnectFunctionLogGroup:
     Type: AWS::Logs::LogGroup
