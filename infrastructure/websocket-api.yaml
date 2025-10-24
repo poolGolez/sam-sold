@@ -44,6 +44,8 @@ Resources:
       FunctionName: WebSocketConnectHandler
       CodeUri: ../src/lot_notification
       Handler: ws_connection.lambda_handler
+      Layers:
+        - !Ref SamSoldLayer
       Policies:
         - AWSLambdaBasicExecutionRole
         - Statement:
@@ -70,6 +72,17 @@ Resources:
       FunctionName: !Ref ConnectFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/$connect"
+
+  # TODO: Extract later to shared layer
+  SamSoldLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub "${AWS::StackName}_core-dependencies"
+      Description: Common Python dependencies
+      ContentUri: ../layers/sam_sold_dependencies
+      CompatibleRuntimes:
+        - python3.12
+    DeletionPolicy: Delete
 
   ConnectionsTable:
     Type: AWS::DynamoDB::Table
