@@ -12,7 +12,6 @@ Resources:
   WebSocketApi:
     Type: AWS::ApiGatewayV2::Api
     Properties:
-      Name: MinimalWebSocketAPI
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: "$request.body.action"
 
@@ -54,10 +53,10 @@ Resources:
                 - execute-api:ManageConnections
               Resource: "*"
         - DynamoDBCrudPolicy:
-            TableName: !Ref ConnectionsTable
+            TableName: !ImportValue SamSold-ConnectionsTable
       Environment:
         Variables:
-          CONNECTIONS_TABLE: !Ref ConnectionsTable
+          CONNECTIONS_TABLE: !ImportValue SamSold-ConnectionsTable
 
   ConnectFunctionLogGroup:
     Type: AWS::Logs::LogGroup
@@ -83,18 +82,6 @@ Resources:
       CompatibleRuntimes:
         - python3.12
     DeletionPolicy: Delete
-
-  ConnectionsTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: SamSoldConnections
-      BillingMode: PAY_PER_REQUEST
-      AttributeDefinitions:
-        - AttributeName: PK
-          AttributeType: S
-      KeySchema:
-        - AttributeName: PK
-          KeyType: HASH
 
 Outputs:
   ApiEndpoint:

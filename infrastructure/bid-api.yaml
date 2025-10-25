@@ -56,10 +56,10 @@ Resources:
             Method: get
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref BidsTable
+            TableName: !ImportValue SamSold-BidsTable
       Environment:
         Variables:
-          BIDS_TABLE: !Ref BidsTable
+          BIDS_TABLE: !ImportValue SamSold-BidsTable
 
   ProcessBidFunction:
     Type: AWS::Serverless::Function
@@ -88,11 +88,11 @@ Resources:
         - SQSSendMessagePolicy:
             QueueName: !Ref ProcessBidDeadLetterQueue
         - DynamoDBCrudPolicy:
-            TableName: !Ref BidsTable
+            TableName: !ImportValue SamSold-BidsTable
       Environment:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
-          BIDS_TABLE: !Ref BidsTable
+          BIDS_TABLE: !ImportValue SamSold-BidsTable
 
   BroadcastLotChangesFunction:
     Type: AWS::Serverless::Function
@@ -105,7 +105,7 @@ Resources:
         DynamoStream:
           Type: DynamoDB
           Properties:
-            Stream: !GetAtt BidsTable.StreamArn
+            Stream: !ImportValue SamSold-BidsTable-StreamArn
             StartingPosition: LATEST
             BatchSize: 5
             MaximumRetryAttempts: 2
@@ -175,21 +175,6 @@ Resources:
     Properties:
       QueueName: !Sub "${AWS::StackName}-bid-fifo-queue-dlq.fifo"
       FifoQueue: true
-
-  BidsTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: SamSoldBids
-      BillingMode: PAY_PER_REQUEST
-      AttributeDefinitions:
-        - AttributeName: PK
-          AttributeType: S
-      KeySchema:
-        - AttributeName: PK
-          KeyType: HASH
-      StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
-
 
 Outputs:
   ApiEndpoint:

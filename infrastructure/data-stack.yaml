@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Resources:
+
+  BidsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: SamSold-Bids
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+
+  ConnectionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: SamSold-Connections
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+
+Outputs:
+  BidsTableName:
+    Description: Name of the Bids Table
+    Value: !Ref BidsTable
+    Export:
+      Name: SamSold-BidsTable
+
+  BidsTableStreamArn:
+    Description: Arn of the Bids Table Stream
+    Value: !GetAtt BidsTable.StreamArn
+    Export:
+      Name: SamSold-BidsTable-StreamArn
+
+  ConnectionsTableName:
+    Description: Name of the Connections Table
+    Value: !Ref ConnectionsTable
+    Export:
+      Name: SamSold-ConnectionsTable

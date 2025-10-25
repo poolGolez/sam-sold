@@ -1,5 +1,5 @@
 aws dynamodb put-item \
-  --table-name SamSoldBids \
+  --table-name 'SamSold-Bids' \
   --item '{
    "PK": {"S": "LOT#1024"},
    "id": {"S": "1024"},
@@ -9,7 +9,7 @@ aws dynamodb put-item \
   }'
 
 aws dynamodb put-item \
-  --table-name SamSoldBids \
+  --table-name 'SamSold-Bids' \
   --item '{
    "PK": {"S": "LOT#512"},
    "id": {"S": "512"},
@@ -19,7 +19,7 @@ aws dynamodb put-item \
   }'
 
 aws dynamodb put-item \
-  --table-name SamSoldBids \
+  --table-name 'SamSold-Bids' \
   --item '{
    "PK": {"S": "LOT#32"},
    "id": {"S": "32"},

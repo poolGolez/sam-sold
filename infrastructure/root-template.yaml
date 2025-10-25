@@ -16,6 +16,11 @@ Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/devel
       LogFormat: JSON
 Resources:
 
+  DataStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./data-stack.yaml
+
   BidApiStack:
     Type: AWS::CloudFormation::Stack
     Properties:
