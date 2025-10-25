@@ -25,11 +25,13 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: ./bid-api.yaml
+    DependsOn: DataStack
 
   WebSocketApiStack:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: ./websocket-api.yaml
+    DependsOn: DataStack
 
 Outputs:
   BidApiEndpoint:
