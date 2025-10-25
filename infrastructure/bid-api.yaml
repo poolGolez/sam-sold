@@ -8,6 +8,8 @@ Globals:
     Runtime: python3.12
     LoggingConfig:
       LogFormat: JSON
+  Api:
+    EndpointConfiguration: REGIONAL
 
 Resources:
   PlaceBidFunction:
