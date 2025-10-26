@@ -26,6 +26,7 @@ class Bid:
                 if (self.time_processed is not None) else None
         }
 
+
 class LotStatus(Enum):
     DRAFT = auto()
     OPEN = auto()
@@ -41,3 +42,18 @@ class Lot:
     highest_bid_amount: Optional[Decimal] = None
     time_opened: Optional[datetime] = None
     time_closed: Optional[datetime] = None
+
+    def to_json(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "status": self.status.name,
+            "highest_bid_id": self.highest_bid_id \
+                if (self.highest_bid_id is not None) else None,
+            "highest_bid_amount": str(self.highest_bid_amount) \
+                if (self.highest_bid_amount is not None) else None,
+            "time_opened": self.time_opened.isoformat()
+                if (self.time_opened is not None) else None,
+            "time_closed": self.time_closed.isoformat() \
+                if (self.time_closed is not None) else None
+        }

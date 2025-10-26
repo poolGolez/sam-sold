@@ -107,7 +107,7 @@ Resources:
           Properties:
             Stream: !ImportValue SamSold-BidsTable-StreamArn
             StartingPosition: LATEST
-            BatchSize: 5
+            BatchSize: 1
             MaximumRetryAttempts: 2
             Enabled: true
             FilterCriteria:
