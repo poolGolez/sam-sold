@@ -41,6 +41,19 @@ def fetch_subscriber_connections(lot):
     ).get("Items", [])
 
 
+def delete_connection(connection):
+    connection_key = connection.get('SK')
+    lot_key = connection.get('PK')
+    items_to_delete = [
+        {'PK': connection_key, 'SK': connection_key},
+        {'PK': lot_key, 'SK': connection_key},
+    ]
+
+    with connections_table.batch_writer() as batch:
+        for key in items_to_delete:
+            batch.delete_item(Key=key)
+
+
 @logger.inject_lambda_context
 def lambda_handler(event, _context):
     record = event['Records'][0]
@@ -48,18 +61,17 @@ def lambda_handler(event, _context):
     message = json.dumps({'lot': lot.to_json()})
 
     for connection in fetch_subscriber_connections(lot):
-        connection_id = connection.get('SK')
+        connection_id = connection.get('connection_id')
         try:
             apigateway.post_to_connection(
                 Data=message.encode('utf-8'),
                 ConnectionId=connection_id
             )
         except ClientError as e:
-            # TODO: DElete connection that's dead (needs table refactor however)
-            # if e.response['Error']['Code'] == 'GoneException':
-            #     # Remove stale connection
-            #     table.delete_item(Key={'connectionId': connection_id})
-            # else:
-            logger.error(f"Failed to send to {connection_id}: {e}")
+            if e.response['Error']['Code'] == 'GoneException':
+                logger.debug("Deleting stale connection", extra={'connection': connection})
+                delete_connection(connection)
+            else:
+                logger.error(f"Failed to send to {connection_id}: {e}")
 
     return {"statusCode": 200}
