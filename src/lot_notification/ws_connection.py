@@ -20,9 +20,9 @@ def lambda_handler(event, _context):
     user_id = event['queryStringParameters']['user']
 
     connections_table.put_item(Item={
-        'PK': connection_id,
+        'PK': 'LOT#1024',
+        'SK': connection_id,
+        'user_id': user_id,
         'details': json.dumps(details),
-        'user_id': user_id
     })
-
     return {"statusCode": 200}

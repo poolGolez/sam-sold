@@ -124,7 +124,18 @@ Resources:
                       }
                     }
 
-
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+            - Effect: Allow
+              Action:
+                - execute-api:ManageConnections
+              Resource: "*"
+        - DynamoDBCrudPolicy:
+            TableName: !ImportValue SamSold-ConnectionsTable
+      Environment:
+        Variables:
+          CONNECTIONS_TABLE: !ImportValue SamSold-ConnectionsTable
 
   SamSoldLayer:
     Type: AWS::Serverless::LayerVersion
