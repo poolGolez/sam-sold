@@ -228,6 +228,12 @@ Resources:
       Handler: ws_connection.lambda_handler
       Layers:
         - !Ref SamSoldLayer
+#      Events:
+#        DisconnectRoute:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref WebSocketApi
+#            RouteKey: $disconnect
       Policies:
         - AWSLambdaBasicExecutionRole
         - Statement:
