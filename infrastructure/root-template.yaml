@@ -27,18 +27,11 @@ Resources:
       TemplateURL: ./bid-api.yaml
     DependsOn: DataStack
 
-  WebSocketApiStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: ./websocket-api.yaml
-    DependsOn: DataStack
-
 Outputs:
   BidApiEndpoint:
-    Description: API Gateway endpoint URL for Bids API
-      Function
-    Value: !GetAtt BidApiStack.Outputs.ApiEndpoint
+    Description: API Gateway endpoint URL for Bids API Function
+    Value: !GetAtt BidApiStack.Outputs.BidsApiEndpoint
 
   WebSocketApiEndpoint:
-    Description: "WebSocket API endpoint"
-    Value: !GetAtt WebSocketApiStack.Outputs.ApiEndpoint
+    Description: WebSocket API endpoint
+    Value: !GetAtt BidApiStack.Outputs.WebSocketApiEndpoint
