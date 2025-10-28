@@ -130,7 +130,7 @@ Resources:
             - Effect: Allow
               Action:
                 - execute-api:ManageConnections
-              Resource: "*"
+              Resource: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/@connections/*"
         - DynamoDBCrudPolicy:
             TableName: !ImportValue SamSold-ConnectionsTable
       Environment:

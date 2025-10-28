@@ -5,15 +5,6 @@ Description: >
 
   Powertools example
 
-Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
-  Function:
-    Timeout: 5
-    MemorySize: 128
-    Runtime: python3.12
-
-    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
-    LoggingConfig:
-      LogFormat: JSON
 Resources:
 
   DataStack:
@@ -21,10 +12,11 @@ Resources:
     Properties:
       TemplateURL: ./data-stack.yaml
 
+  # TODO: Pass the parameters from DataStack
   BidApiStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: ./bid-api.yaml
+      TemplateURL: ./logic-stack.yaml
     DependsOn: DataStack
 
 Outputs:
