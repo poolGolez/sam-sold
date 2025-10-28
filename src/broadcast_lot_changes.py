@@ -12,8 +12,7 @@ from domain import Lot
 from domain import LotStatus
 
 connections_table_name = os.environ['CONNECTIONS_TABLE']
-# TODO Configure as environment variable
-websocket_endpoint = 'https://qux8ug9mc1.execute-api.ap-southeast-1.amazonaws.com/dev'
+websocket_endpoint = os.environ['WEBSOCKET_API_INVOKE_URL']
 
 logger = Logger(service="BroadcastLotChangesService")
 dynamodb = boto3.resource('dynamodb')
