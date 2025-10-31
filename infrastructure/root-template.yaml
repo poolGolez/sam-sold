@@ -13,7 +13,7 @@ Resources:
       TemplateURL: ./data-stack.yaml
 
   # TODO: Pass the parameters from DataStack
-  BidApiStack:
+  LogicStack:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: ./logic-stack.yaml
@@ -22,8 +22,8 @@ Resources:
 Outputs:
   BidApiEndpoint:
     Description: API Gateway endpoint URL for Bids API Function
-    Value: !GetAtt BidApiStack.Outputs.BidsApiEndpoint
+    Value: !GetAtt LogicStack.Outputs.BidsApiEndpoint
 
   WebSocketApiEndpoint:
     Description: WebSocket API endpoint
-    Value: !GetAtt BidApiStack.Outputs.WebSocketApiEndpoint
+    Value: !GetAtt LogicStack.Outputs.WebSocketApiEndpoint
