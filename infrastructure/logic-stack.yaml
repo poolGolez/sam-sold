@@ -213,6 +213,14 @@ Resources:
       AuthorizationType: NONE
       Target: !Sub "integrations/${ConnectIntegration}"
 
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      Target: !Sub "integrations/${ConnectIntegration}"
+
   ConnectIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -223,17 +231,10 @@ Resources:
   ConnectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: WebSocketConnectHandler
       CodeUri: ../src/lot_notification
       Handler: ws_connection.lambda_handler
       Layers:
         - !Ref SamSoldLayer
-#      Events:
-#        DisconnectRoute:
-#          Type: Api
-#          Properties:
-#            RestApiId: !Ref WebSocketApi
-#            RouteKey: $disconnect
       Policies:
         - AWSLambdaBasicExecutionRole
         - Statement:
@@ -261,6 +262,14 @@ Resources:
       FunctionName: !Ref ConnectFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/$connect"
+
+  DisconnectPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ConnectFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/$disconnect"
   ### [END] Connections and Web Sockets
 
 Outputs:

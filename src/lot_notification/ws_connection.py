@@ -32,6 +32,7 @@ def on_connect(event):
             'PK': connection_key,
             'SK': connection_key,
             'connection_id': connection_id,
+            'lot_id': lot_id,
             'user_id': user_id,
             'details': json.dumps(details),
         }
@@ -41,12 +42,15 @@ def on_connect(event):
         for item in items_to_write:
             batch.put_item(Item=item)
 
+
 def on_disconnect(event):
     connection_id = event['requestContext']['connectionId']
     logger.info(f"Disconnecting {connection_id}", extra={"event": event})
     connection_key = f"CONN#{connection_id}"
-    # TODO: Retrieve from DynamoDB
-    lot_id = "1024" # Fuck, needs to  read from DB
+
+    connection_record = connections_table.get_item(Key={"PK": connection_key, "SK": connection_key}).get('Item', {})
+    lot_id = connection_record.get('lot_id', None)
+
     lot_key = f"LOT#{lot_id}"
     items_to_delete = [
         {'PK': connection_key, 'SK': connection_key},
@@ -57,11 +61,16 @@ def on_disconnect(event):
         for key in items_to_delete:
             batch.delete_item(Key=key)
 
-# TODO on disconnect, delete connection
+
 @logger.inject_lambda_context
 def lambda_handler(event, _context):
     logger.info("Received event:", extra={'event': event})
     event_type = event['requestContext']['eventType']
     if event_type == 'CONNECT':
         on_connect(event)
+    elif event_type == 'DISCONNECT':
+        on_disconnect(event)
+    else:
+        logger.error(f"Unhandled event type: {event_type}")
+
     return {"statusCode": 200}
