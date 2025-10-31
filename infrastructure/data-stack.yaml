@@ -36,17 +36,11 @@ Outputs:
   BidsTableName:
     Description: Name of the Bids Table
     Value: !Ref BidsTable
-    Export:
-      Name: SamSold-BidsTable
 
   BidsTableStreamArn:
     Description: Arn of the Bids Table Stream
     Value: !GetAtt BidsTable.StreamArn
-    Export:
-      Name: SamSold-BidsTable-StreamArn
 
   ConnectionsTableName:
     Description: Name of the Connections Table
     Value: !Ref ConnectionsTable
-    Export:
-      Name: SamSold-ConnectionsTable

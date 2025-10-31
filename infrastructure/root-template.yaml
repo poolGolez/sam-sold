@@ -12,12 +12,14 @@ Resources:
     Properties:
       TemplateURL: ./data-stack.yaml
 
-  # TODO: Pass the parameters from DataStack
   LogicStack:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: ./logic-stack.yaml
-    DependsOn: DataStack
+      Parameters:
+        ConnectionsTable: !GetAtt DataStack.Outputs.ConnectionsTableName
+        BidsTable: !GetAtt DataStack.Outputs.BidsTableName
+        BidsTableStreamArn: !GetAtt DataStack.Outputs.BidsTableStreamArn
 
 Outputs:
   BidApiEndpoint:

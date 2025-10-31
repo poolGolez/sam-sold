@@ -1,6 +1,17 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+  ConnectionsTable:
+    Type: String
+    Description: "Name of the Connections Table"
+  BidsTable:
+    Type: String
+    Description: "Name of the Bids Table"
+  BidsTableStreamArn:
+    Type: String
+    Description: "ARN stream of the Bids Table"
+    
 Globals:
   Function:
     Timeout: 5
@@ -56,10 +67,10 @@ Resources:
             Method: get
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !ImportValue SamSold-BidsTable
+            TableName: !Ref BidsTable
       Environment:
         Variables:
-          BIDS_TABLE: !ImportValue SamSold-BidsTable
+          BIDS_TABLE: !Ref BidsTable
 
   ProcessBidFunction:
     Type: AWS::Serverless::Function
@@ -88,11 +99,11 @@ Resources:
         - SQSSendMessagePolicy:
             QueueName: !Ref ProcessBidDeadLetterQueue
         - DynamoDBCrudPolicy:
-            TableName: !ImportValue SamSold-BidsTable
+            TableName: !Ref BidsTable
       Environment:
         Variables:
           BID_QUEUE_URL: !Ref ProcessBidQueue
-          BIDS_TABLE: !ImportValue SamSold-BidsTable
+          BIDS_TABLE: !Ref BidsTable
 
   BroadcastLotChangesFunction:
     Type: AWS::Serverless::Function
@@ -105,7 +116,7 @@ Resources:
         DynamoStream:
           Type: DynamoDB
           Properties:
-            Stream: !ImportValue SamSold-BidsTable-StreamArn
+            Stream: !Ref BidsTableStreamArn
             StartingPosition: LATEST
             BatchSize: 1
             MaximumRetryAttempts: 2
@@ -132,10 +143,10 @@ Resources:
                 - execute-api:ManageConnections
               Resource: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/@connections/*"
         - DynamoDBCrudPolicy:
-            TableName: !ImportValue SamSold-ConnectionsTable
+            TableName: !Ref ConnectionsTable
       Environment:
         Variables:
-          CONNECTIONS_TABLE: !ImportValue SamSold-ConnectionsTable
+          CONNECTIONS_TABLE: !Ref ConnectionsTable
           WEBSOCKET_API_INVOKE_URL: !Sub
           - "https://${WebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}"
           - { Stage: !Ref WebSocketStage }
@@ -244,10 +255,10 @@ Resources:
               Resource:
                 - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*/@connections/*
         - DynamoDBCrudPolicy:
-            TableName: !ImportValue SamSold-ConnectionsTable
+            TableName: !Ref ConnectionsTable
       Environment:
         Variables:
-          CONNECTIONS_TABLE: !ImportValue SamSold-ConnectionsTable
+          CONNECTIONS_TABLE: !Ref ConnectionsTable
 
   ConnectFunctionLogGroup:
     Type: AWS::Logs::LogGroup
