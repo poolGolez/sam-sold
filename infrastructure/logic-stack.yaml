@@ -27,7 +27,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: place_bid.lambda_handler
-      CodeUri: ../src
+      CodeUri: ../backend/src
       Layers:
         - !Ref SamSoldLayer
       Description: Place Bid function
@@ -53,7 +53,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lot_api.lambda_handler
-      CodeUri: ../src
+      CodeUri: ../backend/src
       Layers:
         - !Ref SamSoldLayer
       Description: Resources API for Lot
@@ -76,7 +76,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: process_bid.lambda_handler
-      CodeUri: ../src
+      CodeUri: ../backend/src
       Layers:
         - !Ref SamSoldLayer
       Description: Process Bid Queue Worker
@@ -108,7 +108,7 @@ Resources:
   BroadcastLotChangesFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ../src
+      CodeUri: ../backend/src
       Handler: broadcast_lot_changes.lambda_handler
       Layers:
         - !Ref SamSoldLayer
@@ -156,7 +156,7 @@ Resources:
     Properties:
       LayerName: !Sub "${AWS::StackName}_core-dependencies"
       Description: Common Python dependencies
-      ContentUri: ../layers/sam_sold_dependencies
+      ContentUri: ../backend/layers/sam_sold_dependencies
       CompatibleRuntimes:
         - python3.12
     DeletionPolicy: Delete
@@ -242,7 +242,7 @@ Resources:
   ConnectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ../src/lot_notification
+      CodeUri: ../backend/src/lot_notification
       Handler: ws_connection.lambda_handler
       Layers:
         - !Ref SamSoldLayer
