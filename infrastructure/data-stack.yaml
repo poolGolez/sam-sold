@@ -10,9 +10,18 @@ Resources:
       AttributeDefinitions:
         - AttributeName: PK
           AttributeType: S
+        - AttributeName: LotGsiKey
+          AttributeType: S
       KeySchema:
         - AttributeName: PK
           KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: LotGsi
+          KeySchema:
+            - AttributeName: LotGsiKey
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
 

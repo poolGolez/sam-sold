@@ -4,6 +4,7 @@ aws dynamodb batch-write-item --request-items '{
       "PutRequest": {
         "Item": {
           "PK": {"S": "LOT#1024"},
+          "LotGsiKey": {"S": "LOT#1024"},
           "id": {"S": "1024"},
           "name": {"S": "Shiny Magmar"},
           "status": {"S":"OPEN"},
@@ -16,6 +17,7 @@ aws dynamodb batch-write-item --request-items '{
       "PutRequest": {
         "Item": {
           "PK": {"S": "LOT#1025"},
+          "LotGsiKey": {"S": "LOT#1025"},
           "id": {"S": "1025"},
           "name": {"S": "Galarian Ponyta"},
           "status": {"S":"OPEN"},
@@ -28,6 +30,7 @@ aws dynamodb batch-write-item --request-items '{
       "PutRequest": {
         "Item": {
           "PK": {"S": "LOT#1026"},
+          "LotGsiKey": {"S": "LOT#1026"},
           "id": {"S": "1026"},
           "name": {"S": "Pokemon Egg"},
           "status": {"S":"OPEN"},
@@ -40,6 +43,7 @@ aws dynamodb batch-write-item --request-items '{
       "PutRequest": {
         "Item": {
           "PK": {"S": "LOT#1027"},
+          "LotGsiKey": {"S": "LOT#1027"},
           "id": {"S": "1027"},
           "name": {"S": "Celebi"},
           "status": {"S":"OPEN"},
@@ -52,6 +56,7 @@ aws dynamodb batch-write-item --request-items '{
       "PutRequest": {
         "Item": {
           "PK": {"S": "LOT#1028"},
+          "LotGsiKey": {"S": "LOT#1028"},
           "id": {"S": "1028"},
           "name": {"S": "Dark Mimikyu"},
           "status": {"S":"OPEN"},
@@ -64,6 +69,7 @@ aws dynamodb batch-write-item --request-items '{
       "PutRequest": {
         "Item": {
           "PK": {"S": "LOT#1029"},
+          "LotGsiKey": {"S": "LOT#1029"},
           "id": {"S": "1029"},
           "name": {"S": "Shiny Gardevoir"},
           "status": {"S":"OPEN"},
@@ -74,3 +80,8 @@ aws dynamodb batch-write-item --request-items '{
     }
   ]
 }';
+
+aws dynamodb scan \
+  --table-name SamSold-Bids \
+  --key-condition-expression "begins_with(PK, :prefix)" \
+  --expression-attribute-values '{":prefix":{"S":"LOT#"}}'
