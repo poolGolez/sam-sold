@@ -13,6 +13,14 @@ bids_table_name = os.environ['BIDS_TABLE']
 dynamodb = boto3.resource('dynamodb')
 bids_table = dynamodb.Table(bids_table_name)
 
+
+@app.get("/lots")
+def get_lot():
+    return {
+        "message": "Eureka"
+    }
+
+
 @app.get("/lots/<lot_id>")
 def get_lot(lot_id: str):
     lot = find_lot(bids_table, lot_id)
