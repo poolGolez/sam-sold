@@ -4,14 +4,19 @@ import React from "react";
 interface LotCardProps {
   lotName: string;
   highestBid?: number;
+  imagerUrl: string;
 }
 
-const LotCard: React.FC<LotCardProps> = ({ lotName, highestBid = 0.0 }) => {
+const LotCard: React.FC<LotCardProps> = ({
+  lotName,
+  highestBid = 0.0,
+  imagerUrl,
+}) => {
   return (
     <Card sx={{ display: "flex" }}>
       <Box sx={{ display: "flex", flexDirection: "column", width: "75%" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography component="div" variant="h5">
+          <Typography component="div" variant="h3">
             {highestBid}
           </Typography>
           <Typography
@@ -23,12 +28,19 @@ const LotCard: React.FC<LotCardProps> = ({ lotName, highestBid = 0.0 }) => {
           </Typography>
         </CardContent>
       </Box>
-      <CardMedia
-        component="img"
-        sx={{ width: 151 }}
-        image="/pokeball.png"
-        alt="Pokeball"
-      />
+      <Box
+        sx={{
+          p: 2,
+          border: "1px solid lightgray",
+        }}
+      >
+        <CardMedia
+          component="img"
+          sx={{ objectFit: "contain", height: "160px" }}
+          image={imagerUrl}
+          alt={lotName}
+        />
+      </Box>
     </Card>
   );
 };
