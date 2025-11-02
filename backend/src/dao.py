@@ -4,6 +4,16 @@ from typing import Optional
 from domain import Lot, LotStatus
 
 
+def find_all_lots(bids_table) -> list[Lot]:
+    response = bids_table.scan(
+        IndexName="LotGsi",
+        Limit=20
+    )
+
+    items = response.get("Items", [])
+    return [map_db_item_to_lot(item) for item in items]
+
+
 def find_lot(bids_table, lot_id: str) -> Optional[Lot]:
     response = bids_table.get_item(
         Key={"PK": f"LOT#{lot_id}"},
@@ -14,7 +24,13 @@ def find_lot(bids_table, lot_id: str) -> Optional[Lot]:
     if item is None:
         return None
 
-    lot = Lot(
+    lot = map_db_item_to_lot(item)
+
+    return lot
+
+
+def map_db_item_to_lot(item):
+    return Lot(
         id=item['id'],
         name=item['name'],
         status=LotStatus[item['status']],
@@ -23,5 +39,3 @@ def find_lot(bids_table, lot_id: str) -> Optional[Lot]:
         time_opened=datetime.fromisoformat(item['time_opened']) if item.get('time_opened') is not None else None,
         time_closed=datetime.fromisoformat(item['time_closed']) if item.get('time_closed') is not None else None
     )
-
-    return lot
