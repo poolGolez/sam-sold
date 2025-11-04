@@ -34,6 +34,7 @@ def map_db_item_to_lot(item):
         id=item['id'],
         name=item['name'],
         status=LotStatus[item['status']],
+        image_url=item.get('image_url'),
         highest_bid_id=item.get('highest_bid_id'),
         highest_bid_amount=item.get('highest_bid_amount'),
         time_opened=datetime.fromisoformat(item['time_opened']) if item.get('time_opened') is not None else None,

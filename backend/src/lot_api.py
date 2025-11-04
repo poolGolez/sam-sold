@@ -38,7 +38,8 @@ def serialize_lot(lot):
         "id": lot.id,
         "name": lot.name,
         "status": lot.status.name,
-        "highest_bid_id": lot.highest_bid_id,
-        "highest_bid_amount": lot.highest_bid_amount,
-        "time_opened": lot.time_opened.isoformat() if lot.time_opened is not None else None,
+        "imageUrl": lot.image_url,
+        "highestBidId": lot.highest_bid_id,
+        "highestBidAmount": lot.highest_bid_amount,
+        "timeOpened": lot.time_opened.isoformat() if lot.time_opened is not None else None,
     }

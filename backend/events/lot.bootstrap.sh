@@ -9,7 +9,7 @@ aws dynamodb batch-write-item --request-items '{
           "name": {"S": "Shiny Magmar"},
           "status": {"S":"OPEN"},
           "time_opened": {"S":"2025-02-18T06:37:59.03365"},
-          "imageUrl": {"S": "images/pokemon/shiny-magmar.webp"}
+          "image_url": {"S": "images/pokemon/shiny-magmar.webp"}
         }
       }
     },
@@ -22,7 +22,7 @@ aws dynamodb batch-write-item --request-items '{
           "name": {"S": "Galarian Ponyta"},
           "status": {"S":"OPEN"},
           "time_opened": {"S":"2025-02-18T06:37:59.03365"},
-          "imageUrl": {"S": "images/pokemon/galarian-ponyta.png"}
+          "image_url": {"S": "images/pokemon/galarian-ponyta.png"}
         }
       }
     },
@@ -35,7 +35,7 @@ aws dynamodb batch-write-item --request-items '{
           "name": {"S": "Pokemon Egg"},
           "status": {"S":"OPEN"},
           "time_opened": {"S":"2025-02-18T06:37:59.03365"},
-          "imageUrl": {"S": "images/pokemon/pokemon-egg.jpeg"}
+          "image_url": {"S": "images/pokemon/pokemon-egg.jpeg"}
         }
       }
     },
@@ -48,7 +48,7 @@ aws dynamodb batch-write-item --request-items '{
           "name": {"S": "Celebi"},
           "status": {"S":"OPEN"},
           "time_opened": {"S":"2025-02-18T06:37:59.03365"},
-          "imageUrl": {"S": "images/pokemon/celebi.webp"}
+          "image_url": {"S": "images/pokemon/celebi.webp"}
         }
       }
     },
@@ -61,7 +61,7 @@ aws dynamodb batch-write-item --request-items '{
           "name": {"S": "Dark Mimikyu"},
           "status": {"S":"OPEN"},
           "time_opened": {"S":"2025-02-18T06:37:59.03365"},
-          "imageUrl": {"S": "images/pokemon/dark-mimikyu.png"}
+          "image_url": {"S": "images/pokemon/dark-mimikyu.png"}
         }
       }
     },
@@ -74,7 +74,7 @@ aws dynamodb batch-write-item --request-items '{
           "name": {"S": "Shiny Gardevoir"},
           "status": {"S":"OPEN"},
           "time_opened": {"S":"2025-02-18T06:37:59.03365"},
-          "imageUrl": {"S": "images/pokemon/shiny-gardevoir.png"}
+          "image_url": {"S": "images/pokemon/shiny-gardevoir.png"}
         }
       }
     }

@@ -18,11 +18,11 @@ class Bid:
     def to_json(self) -> dict:
         return {
             "id": self.id,
-            "user_id": self.user_id,
-            "lot_id": self.lot_id,
+            "userId": self.user_id,
+            "lotId": self.lot_id,
             "amount": self.amount,
-            "time_placed": self.time_placed.isoformat(),
-            "time_processed": self.time_processed.isoformat() \
+            "timePlaced": self.time_placed.isoformat(),
+            "timeProcessed": self.time_processed.isoformat() \
                 if (self.time_processed is not None) else None
         }
 
@@ -38,6 +38,7 @@ class Lot:
     id: str
     name: str
     status: LotStatus = LotStatus.DRAFT
+    image_url: Optional[str] = None
     highest_bid_id: Optional[str] = None
     highest_bid_amount: Optional[Decimal] = None
     time_opened: Optional[datetime] = None
@@ -48,12 +49,13 @@ class Lot:
             "id": self.id,
             "name": self.name,
             "status": self.status.name,
-            "highest_bid_id": self.highest_bid_id \
+            "image_url": self.image_url,
+            "highestBidId": self.highest_bid_id \
                 if (self.highest_bid_id is not None) else None,
-            "highest_bid_amount": str(self.highest_bid_amount) \
+            "highestBidAmount": str(self.highest_bid_amount) \
                 if (self.highest_bid_amount is not None) else None,
-            "time_opened": self.time_opened.isoformat()
+            "timeOpened": self.time_opened.isoformat()
                 if (self.time_opened is not None) else None,
-            "time_closed": self.time_closed.isoformat() \
+            "timeClosed": self.time_closed.isoformat() \
                 if (self.time_closed is not None) else None
         }
