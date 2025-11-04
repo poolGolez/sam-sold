@@ -4,7 +4,7 @@ import React from "react";
 interface LotCardProps {
   lotName: string;
   highestBid?: number;
-  imagerUrl: string;
+  imagerUrl?: string;
 }
 
 const LotCard: React.FC<LotCardProps> = ({

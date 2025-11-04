@@ -2,41 +2,23 @@ import logo from "./logo.svg";
 import "./App.css";
 import { Container, Grid } from "@mui/material";
 import LotCard from "./components/LotCard";
-
-const lots = [
-  {
-    name: "Shiny Magmar",
-    highestBidAmount: 25.31,
-    imageUrl: "/images/pokemon/shiny-magmar.webp",
-  },
-  {
-    name: "Galarian Ponyta",
-    highestBidAmount: 22.1,
-    imageUrl: "/images/pokemon/galarian-ponyta.png",
-  },
-  {
-    name: "Pokemon Egg",
-    highestBidAmount: 30.45,
-    imageUrl: "/images/pokemon/pokemon-egg.jpeg",
-  },
-  {
-    name: "Celebi",
-    highestBidAmount: 27.89,
-    imageUrl: "/images/pokemon/celebi.webp",
-  },
-  {
-    name: "Dark Mimikyu",
-    highestBidAmount: 35.0,
-    imageUrl: "/images/pokemon/dark-mimikyu.png",
-  },
-  {
-    name: "Shiny Gardevoir",
-    highestBidAmount: 29.75,
-    imageUrl: "/images/pokemon/shiny-gardevoir.png",
-  },
-];
+import { useEffect, useState } from "react";
+import { fetchAllLots } from "./services/LotService";
+import { Lot } from "./services/types/LotService";
 
 function App() {
+  const [lots, setLots] = useState<Array<Lot>>([]);
+
+  useEffect(() => {
+    const fetchLots = async () => {
+      const { data } = await fetchAllLots();
+      console.log({ data });
+      setLots(data);
+    };
+
+    fetchLots();
+  }, []);
+
   return (
     <div className="App">
       <Container>
