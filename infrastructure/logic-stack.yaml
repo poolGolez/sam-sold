@@ -11,7 +11,6 @@ Parameters:
   BidsTableStreamArn:
     Type: String
     Description: "ARN stream of the Bids Table"
-    
 Globals:
   Function:
     Timeout: 5
@@ -19,10 +18,26 @@ Globals:
     Runtime: python3.12
     LoggingConfig:
       LogFormat: JSON
-  Api:
-    EndpointConfiguration: REGIONAL
 
 Resources:
+  HttpApiGateway:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: Prod
+      CorsConfiguration:
+        AllowOrigins:
+          - "http://localhost:3000"
+        AllowHeaders:
+          - "Content-Type"
+          - "Authorization"
+          - "X-Amz-Date"
+          - "X-Api-Key"
+          - "X-Amz-Security-Token"
+        AllowMethods:
+          - "GET"
+          - "POST"
+          - "OPTIONS"
+
   PlaceBidFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -35,8 +50,9 @@ Resources:
         - x86_64
       Events:
         PlaceBidPath:
-          Type: Api
+          Type: HttpApi
           Properties:
+            ApiId: !Ref HttpApiGateway
             Path: /bid
             Method: post
       Policies:
@@ -61,13 +77,15 @@ Resources:
         - x86_64
       Events:
         ListLotsPath:
-          Type: Api
+          Type: HttpApi
           Properties:
+            ApiId: !Ref HttpApiGateway
             Path: /lots
-            Method: get
+            Method: GET
         GetLotPath:
-          Type: Api
+          Type: HttpApi
           Properties:
+            ApiId: !Ref HttpApiGateway
             Path: /lots/{lot_id}
             Method: get
       Policies:
@@ -153,8 +171,8 @@ Resources:
         Variables:
           CONNECTIONS_TABLE: !Ref ConnectionsTable
           WEBSOCKET_API_INVOKE_URL: !Sub
-          - "https://${WebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}"
-          - { Stage: !Ref WebSocketStage }
+            - "https://${WebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}"
+            - { Stage: !Ref WebSocketStage }
 
   SamSoldLayer:
     Type: AWS::Serverless::LayerVersion
@@ -292,7 +310,9 @@ Outputs:
   BidsApiEndpoint:
     Description: API Gateway endpoint URL for for Hello World
       Function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
+    Value: !Sub
+      - "https://${ApiId}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
+      - ApiId: !Ref HttpApiGateway
 
   WebSocketApiEndpoint:
     Description: "WebSocket API endpoint"
