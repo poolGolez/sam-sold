@@ -4,12 +4,12 @@ from datetime import datetime
 
 import boto3
 from aws_lambda_powertools import Logger
-from aws_lambda_powertools.event_handler import APIGatewayRestResolver
+from aws_lambda_powertools.event_handler import APIGatewayHttpResolver
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
 from domain import Bid
 
-app = APIGatewayRestResolver()
+app = APIGatewayHttpResolver()
 bid_queue_url = os.environ['BID_QUEUE_URL']
 sqs = boto3.client('sqs')
 logger = Logger(service="BidService")

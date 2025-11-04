@@ -27,12 +27,14 @@ def fetch_lot(lot_id):
 
 
 def parse_record(record: dict) -> Bid:
-    return Bid(**{
-        **record,
-        "amount": Decimal(str(record['amount'])),
-        "time_placed": datetime.fromisoformat(record['time_placed']),
-        "time_processed": datetime.now()
-    })
+    return Bid(
+        id=str(record['id']),
+        user_id=str(record['userId']),
+        lot_id=str(record['lotId']),
+        amount=Decimal(str(record['amount'])),
+        time_placed=datetime.fromisoformat(record['timePlaced']),
+        time_processed=datetime.now()
+    )
 
 
 def map_to_dynamodb_item(item: dict) -> dict:
@@ -89,9 +91,8 @@ def lambda_handler(event: dict, _context: LambdaContext):
 
     if len(valid_message_bid_pairs) > 0:
         highest_bid = max([bid for _, bid in valid_message_bid_pairs], key=lambda b: b.amount)
-        #########################################
+
         # Update lot with highest bid
-        #########################################
         if lot.highest_bid_id is None or lot.highest_bid_amount < highest_bid.amount:
             transaction_items.append({
                 'Update': {
