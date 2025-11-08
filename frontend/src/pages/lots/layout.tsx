@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 const LotsLayout: React.FC = () => {
   const header = (
     <header className="App-header">
-      <img src="pokeball.png" className="App-logo" alt="logo" />
+      <img src="/pokeball.png" className="App-logo" alt="logo" />
     </header>
   );
 
