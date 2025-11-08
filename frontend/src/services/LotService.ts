@@ -9,3 +9,8 @@ export const fetchAllLots = async (): Promise<{
     data: Array<Lot>
   };
 };
+
+export const fetchLotById = async (id: string): Promise<Lot> => {
+  const response = await api.get(`/lots/${id}`);
+  return response.data as Lot;
+}
