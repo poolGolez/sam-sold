@@ -17,11 +17,7 @@ const LotList: React.FC<LotsListProps> = ({ lots }) => {
     >
       {lots.map((lot, index) => (
         <Grid size={4} key={index}>
-          <LotCard
-            lotName={lot.name}
-            highestBid={lot.highestBidAmount}
-            imagerUrl={lot.imageUrl}
-          />
+          <LotCard lot={lot} />
         </Grid>
       ))}
     </Grid>

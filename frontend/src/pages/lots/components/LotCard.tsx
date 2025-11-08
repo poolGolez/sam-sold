@@ -1,44 +1,40 @@
 import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Lot } from "../../../services/types/LotService";
 
 interface LotCardProps {
-  lotName: string;
-  highestBid?: number;
-  imagerUrl?: string;
+  lot: Lot;
 }
 
-const LotCard: React.FC<LotCardProps> = ({
-  lotName,
-  highestBid = 0.0,
-  imagerUrl,
-}) => {
+const LotCard: React.FC<LotCardProps> = ({ lot }) => {
+  const navigate = useNavigate();
+
   return (
-    <Card sx={{ display: "flex" }}>
+    <Card
+      sx={{ display: "flex", cursor: "pointer" }}
+      onClick={() => navigate(`/lots/${lot.id}`)}
+    >
       <Box sx={{ display: "flex", flexDirection: "column", width: "75%" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
           <Typography component="div" variant="h3">
-            {highestBid}
+            {lot.highestBidAmount ? `$${lot.highestBidAmount}` : "No bids yet"}
           </Typography>
           <Typography
             variant="subtitle1"
             component="div"
             sx={{ color: "text.secondary" }}
           >
-            {lotName}
+            {lot.name}
           </Typography>
         </CardContent>
       </Box>
-      <Box
-        sx={{
-          p: 2,
-          border: "1px solid lightgray",
-        }}
-      >
+      <Box sx={{ p: 2 }}>
         <CardMedia
           component="img"
           sx={{ objectFit: "contain", height: "160px" }}
-          image={imagerUrl}
-          alt={lotName}
+          image={lot.imageUrl}
+          alt={lot.name}
         />
       </Box>
     </Card>
