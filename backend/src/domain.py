@@ -69,4 +69,5 @@ class PaginatedList(Generic[T]):
     data: list[T]
     limit: int
     start_key: str | None
+    item_count: int
     last_key: str | None

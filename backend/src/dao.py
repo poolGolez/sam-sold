@@ -52,6 +52,7 @@ def find_bids_by_lot(bids_table, lot: Lot, limit: int = 20, start_key=None) -> P
         data=items,
         limit=limit,
         start_key=start_key,
+        item_count=len(items),
         last_key=encoded_last_key
     )
 
