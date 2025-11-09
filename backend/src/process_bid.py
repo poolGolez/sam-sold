@@ -46,11 +46,14 @@ def map_to_save_bid(bid):
     if bid.amount < 0:
         raise ValueError("Amount should not be negative")
 
+    bid_id = f"BID#{bid.id}"
     return {
         'Put': {
             'TableName': bids_table_name,
             'Item': map_to_dynamodb_item({
-                "PK": f"BID#{bid.id}",
+                "PK": bid_id,
+                "BidsByLotGsiPK": f"LOT#{bid.lot_id}",
+                "BidsByLotGsiSK": bid_id,
                 **bid.to_json()
             }),
             'ConditionExpression': 'attribute_not_exists(PK)'

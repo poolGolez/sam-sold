@@ -8,7 +8,7 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 from dao import find_lot, find_all_lots
 
 app = APIGatewayHttpResolver()
-logger = Logger(service="Lot API")
+logger = Logger(service="LotApi")
 bids_table_name = os.environ['BIDS_TABLE']
 dynamodb = boto3.resource('dynamodb')
 bids_table = dynamodb.Table(bids_table_name)

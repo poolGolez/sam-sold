@@ -12,6 +12,10 @@ Resources:
           AttributeType: S
         - AttributeName: LotGsiKey
           AttributeType: S
+        - AttributeName: BidsByLotGsiPK
+          AttributeType: S
+        - AttributeName: BidsByLotGsiSK
+          AttributeType: S
       KeySchema:
         - AttributeName: PK
           KeyType: HASH
@@ -20,6 +24,14 @@ Resources:
           KeySchema:
             - AttributeName: LotGsiKey
               KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: BidsByLotGsi
+          KeySchema:
+            - AttributeName: BidsByLotGsiPK
+              KeyType: HASH
+            - AttributeName: BidsByLotGsiSK
+              KeyType: RANGE
           Projection:
             ProjectionType: ALL
       StreamSpecification:
