@@ -28,6 +28,10 @@ def get_lot(lot_id: str):
     return serialize_lot(lot) if lot else None
 
 
+@app.get("/lots/<lot_id>/bids")
+def get_bids_by_lot(lot_id: str):
+    return []
+
 @logger.inject_lambda_context
 def lambda_handler(event: dict, context: LambdaContext) -> dict:
     return app.resolve(event, context)
