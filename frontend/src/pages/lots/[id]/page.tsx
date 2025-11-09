@@ -4,6 +4,7 @@ import { Lot } from "../../../services/types/LotService";
 import { useParams } from "react-router-dom";
 import LotCard from "./LotCard";
 import { Grid } from "@mui/material";
+import BidCard from "./BidCard";
 
 const LotPage: React.FC = () => {
   const [lot, setLot] = useState<Lot | null>(null);
@@ -23,10 +24,16 @@ const LotPage: React.FC = () => {
   }
 
   return (
-    <Grid container sx={{ pt: 2 }}>
+    <Grid container sx={{ pt: 2, gap: 2 }}>
       <Grid size={{ xs: 12, md: 4 }}>
         <LotCard lot={lot} />
       </Grid>
+
+      {lot.highestBidAmount && (
+        <Grid size={{ xs: 12, md: 6 }}>
+          <BidCard highestBidAmount={lot.highestBidAmount} />
+        </Grid>
+      )}
       <Grid size={{ xs: 12, md: 8 }}>{JSON.stringify(lot)}</Grid>
     </Grid>
   );
