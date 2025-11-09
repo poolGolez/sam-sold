@@ -5,7 +5,7 @@ from aws_lambda_powertools import Logger
 from aws_lambda_powertools.event_handler import APIGatewayHttpResolver
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from dao import find_lot, find_all_lots
+from dao import find_lot, find_all_lots, find_bids_by_lot
 
 app = APIGatewayHttpResolver()
 logger = Logger(service="LotApi")
@@ -30,7 +30,18 @@ def get_lot(lot_id: str):
 
 @app.get("/lots/<lot_id>/bids")
 def get_bids_by_lot(lot_id: str):
-    return []
+    lot = find_lot(bids_table, lot_id)
+    size = int(app.current_event.get_query_string_value("size", "20"))
+    start_key = app.current_event.get_query_string_value("next")
+
+    if lot is None:
+        return {
+            "statusCode": 404,
+            "body": f"Lot {lot_id} not found"
+        }
+
+    return find_bids_by_lot(bids_table, lot, size=size, start_key=start_key)
+
 
 @logger.inject_lambda_context
 def lambda_handler(event: dict, context: LambdaContext) -> dict:

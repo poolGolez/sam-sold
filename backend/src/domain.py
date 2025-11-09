@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum, auto
-from typing import Optional
+from typing import Optional, TypeVar, Generic
 from uuid import uuid4
 
 
@@ -55,7 +55,18 @@ class Lot:
             "highestBidAmount": str(self.highest_bid_amount) \
                 if (self.highest_bid_amount is not None) else None,
             "timeOpened": self.time_opened.isoformat()
-                if (self.time_opened is not None) else None,
+            if (self.time_opened is not None) else None,
             "timeClosed": self.time_closed.isoformat() \
                 if (self.time_closed is not None) else None
         }
+
+
+T = TypeVar("T")
+
+
+@dataclass
+class PaginatedList(Generic[T]):
+    data: list[T]
+    size: int
+    start_key: str | None
+    last_key: str | None
