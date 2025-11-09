@@ -33,11 +33,11 @@ def find_lot(bids_table, lot_id: str) -> Optional[Lot]:
     return lot
 
 
-def find_bids_by_lot(bids_table, lot: Lot, size: int = 20, start_key=None) -> PaginatedList[Lot]:
+def find_bids_by_lot(bids_table, lot: Lot, limit: int = 20, start_key=None) -> PaginatedList[Lot]:
     query = {
         "IndexName": "BidsByLotGsi",
         "KeyConditionExpression": Key("BidsByLotGsiPK").eq(f"LOT#{lot.id}"),
-        "Limit": size
+        "Limit": limit
     }
 
     if start_key is not None:
@@ -50,7 +50,7 @@ def find_bids_by_lot(bids_table, lot: Lot, size: int = 20, start_key=None) -> Pa
 
     return PaginatedList(
         data=items,
-        size=size,
+        limit=limit,
         start_key=start_key,
         last_key=encoded_last_key
     )

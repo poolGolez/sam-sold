@@ -31,7 +31,7 @@ def get_lot(lot_id: str):
 @app.get("/lots/<lot_id>/bids")
 def get_bids_by_lot(lot_id: str):
     lot = find_lot(bids_table, lot_id)
-    size = int(app.current_event.get_query_string_value("size", "20"))
+    limit = int(app.current_event.get_query_string_value("limit", "20"))
     start_key = app.current_event.get_query_string_value("next")
 
     if lot is None:
@@ -40,7 +40,12 @@ def get_bids_by_lot(lot_id: str):
             "body": f"Lot {lot_id} not found"
         }
 
-    return find_bids_by_lot(bids_table, lot, size=size, start_key=start_key)
+    return find_bids_by_lot(
+        bids_table,
+        lot,
+        limit=limit,
+        start_key=start_key
+    )
 
 
 @logger.inject_lambda_context

@@ -67,6 +67,6 @@ T = TypeVar("T")
 @dataclass
 class PaginatedList(Generic[T]):
     data: list[T]
-    size: int
+    limit: int
     start_key: str | None
     last_key: str | None
