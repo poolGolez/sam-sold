@@ -53,8 +53,13 @@ def map_to_save_bid(bid):
             'Item': map_to_dynamodb_item({
                 "PK": bid_id,
                 "BidsByLotGsiPK": f"LOT#{bid.lot_id}",
-                "BidsByLotGsiSK": bid_id,
-                **bid.to_json()
+                "id": bid.id,
+                "user_id": bid.user_id,
+                "lot_id": bid.lot_id,
+                "amount": bid.amount,
+                "time_placed": bid.time_placed.isoformat(),
+                "time_processed": bid.time_processed.isoformat() \
+                    if (bid.time_processed is not None) else None
             }),
             'ConditionExpression': 'attribute_not_exists(PK)'
         }
