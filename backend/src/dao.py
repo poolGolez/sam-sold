@@ -37,6 +37,7 @@ def find_bids_by_lot(bids_table, lot: Lot, limit: int = 20, start_key=None) -> P
     query = {
         "IndexName": "BidsByLotGsi",
         "KeyConditionExpression": Key("BidsByLotGsiPK").eq(f"LOT#{lot.id}"),
+        "ScanIndexForward": False,
         "Limit": limit
     }
 
