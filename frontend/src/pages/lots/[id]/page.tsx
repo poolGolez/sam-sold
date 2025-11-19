@@ -6,6 +6,7 @@ import LotCard from "./LotCard";
 import { Box, Grid } from "@mui/material";
 import BidCard from "./BidCard";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { formatDateTime } from "../../../services/utils";
 const LotPage: React.FC = () => {
   const [lot, setLot] = useState<Lot | null>(null);
   const [bids, setBids] = useState<Bid[]>([]);
@@ -38,14 +39,7 @@ const LotPage: React.FC = () => {
       valueFormatter: (value) => {
         if (!value) return "";
 
-        return new Intl.DateTimeFormat("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        }).format(value);
+        return formatDateTime(value);
       },
     },
   ];
@@ -56,9 +50,9 @@ const LotPage: React.FC = () => {
         <LotCard lot={lot} />
       </Grid>
 
-      {lot.highestBidAmount && (
+      {lot && (
         <Grid size={{ xs: 12, md: 9 }}>
-          <BidCard highestBidAmount={lot.highestBidAmount} />
+          <BidCard lot={lot} />
 
           {bids && (
             <Box sx={{ width: "100%" }}>
