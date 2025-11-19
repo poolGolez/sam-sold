@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
-import { fetchLotById } from "../../../services/LotService";
-import { Lot } from "../../../services/types/LotService";
+import { fetchBidsByLotId, fetchLotById } from "../../../services/LotService";
+import { Bid, Lot } from "../../../services/types/LotService";
 import { useParams } from "react-router-dom";
 import LotCard from "./LotCard";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import BidCard from "./BidCard";
-
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 const LotPage: React.FC = () => {
   const [lot, setLot] = useState<Lot | null>(null);
+  const [bids, setBids] = useState<Bid[]>([]);
   const { id } = useParams();
 
   useEffect(() => {
     const fetchLotDetails = async () => {
       const lotData = await fetchLotById(id!);
       setLot(lotData);
+
+      const bidsData = await fetchBidsByLotId(id!);
+      setBids(bidsData);
     };
 
     fetchLotDetails();
@@ -23,18 +27,50 @@ const LotPage: React.FC = () => {
     return <div>Loading...</div>;
   }
 
+  const columns: GridColDef[] = [
+    { field: "id", headerName: "ID", width: 250 },
+    { field: "amount", headerName: "Amount", width: 100 },
+    { field: "userId", headerName: "User ID", width: 250 },
+    {
+      field: "timePlaced",
+      headerName: "Time Placed",
+      width: 300,
+      valueFormatter: (value) => {
+        if (!value) return "";
+
+        return new Intl.DateTimeFormat("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }).format(value);
+      },
+    },
+  ];
+
   return (
-    <Grid container sx={{ pt: 2, gap: 2 }}>
-      <Grid size={{ xs: 12, md: 4 }}>
+    <Grid container spacing={1} sx={{ pt: 2 }}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <LotCard lot={lot} />
       </Grid>
 
       {lot.highestBidAmount && (
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 9 }}>
           <BidCard highestBidAmount={lot.highestBidAmount} />
+
+          {bids && (
+            <Box sx={{ width: "100%" }}>
+              <DataGrid
+                rows={bids}
+                columns={columns}
+                disableRowSelectionOnClick
+              />
+            </Box>
+          )}
         </Grid>
       )}
-      <Grid size={{ xs: 12, md: 8 }}>{JSON.stringify(lot)}</Grid>
     </Grid>
   );
 };
