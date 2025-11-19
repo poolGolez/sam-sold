@@ -2,6 +2,7 @@ import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Lot } from "../../../services/types/LotService";
+import { formatCurrency } from "../../../services/utils";
 
 interface LotCardProps {
   lot: Lot;
@@ -18,7 +19,9 @@ const LotCard: React.FC<LotCardProps> = ({ lot }) => {
       <Box sx={{ display: "flex", flexDirection: "column", width: "75%" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
           <Typography component="div" variant="h3">
-            {lot.highestBidAmount ? `$${lot.highestBidAmount}` : "No bids yet"}
+            {lot.highestBidAmount
+              ? formatCurrency(lot.highestBidAmount)
+              : "No bids yet"}
           </Typography>
           <Typography
             variant="subtitle1"
