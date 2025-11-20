@@ -7,10 +7,22 @@ import { Box, Grid } from "@mui/material";
 import BidCard from "./BidCard";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { formatDateTime } from "../../../services/utils";
+import { useWebSocket } from "../../../services/websocket";
 const LotPage: React.FC = () => {
   const [lot, setLot] = useState<Lot | null>(null);
   const [bids, setBids] = useState<Bid[]>([]);
   const { id } = useParams();
+
+  const onLotChangeBroadcasted = ({ data }: MessageEvent) => {
+    const jsonData = JSON.parse(data);
+    const updatedLot = jsonData.lot as Lot;
+    setLot({ ...lot, ...updatedLot });
+  };
+
+  useWebSocket(
+    `wss://9ejotlcle8.execute-api.ap-southeast-1.amazonaws.com/dev?user-id=react-1&lot-id=${1024}`,
+    onLotChangeBroadcasted
+  );
 
   useEffect(() => {
     const fetchLotDetails = async () => {
