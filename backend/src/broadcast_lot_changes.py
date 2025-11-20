@@ -25,6 +25,7 @@ def parse_lot(record: dict) -> Lot:
         id=(record.get('id').get('S', None)),
         name=(record.get('name').get('S', None)),
         status=(LotStatus[record.get('status').get('S', None)]),
+        image_url=(record.get('image_url').get('S', None)),
         highest_bid_id=(record.get('highest_bid_id').get('S', None)),
         highest_bid_amount=(Decimal(str(record.get('highest_bid_amount').get('N', None)))),
         time_opened=(datetime.fromisoformat(record.get('time_opened').get('S', None))

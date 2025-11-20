@@ -49,7 +49,7 @@ class Lot:
             "id": self.id,
             "name": self.name,
             "status": self.status.name,
-            "image_url": self.image_url,
+            "imageUrl": self.image_url,
             "highestBidId": self.highest_bid_id \
                 if (self.highest_bid_id is not None) else None,
             "highestBidAmount": str(self.highest_bid_amount) \
